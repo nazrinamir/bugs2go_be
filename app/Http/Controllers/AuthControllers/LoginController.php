@@ -2,17 +2,23 @@
 
 namespace App\Http\Controllers\AuthControllers;
 
+use App\Http\Requests\LoginRequest;
 use Auth;
-use Illuminate\Http\Request;
+use LoginService;
 
 class LoginController
 {
-    public function login(Request $request)
+    private LoginService $loginService;
+
+    public function __construct(LoginService $loginService)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        $this->loginService = $loginService;
+    }
+
+    public function login(LoginRequest $request)
+    {
+        $token = $this->loginService->login($request);
+        return response()->json(['token' => $token]);
     }
 
     public function logout()
